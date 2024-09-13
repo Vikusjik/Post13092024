@@ -13,7 +13,8 @@ class PostsController extends Controller
      */
     public function index()
     {
-        //
+       $posts= Post::all();
+       return view ('posts.index', ['posts'=>$posts]);
     }
 
     /**
@@ -29,10 +30,10 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-     
-     $data['user_id']=1;
-     Post::create($request->all($data) );
-     return redirect()->route(route:'posts.index');
+        $data = $request->all();
+        $data['user_id'] = 1;
+        Post::create($data);
+        return redirect()->route('posts.index');
     }
 
     /**
@@ -40,7 +41,8 @@ class PostsController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show', ['post'=>$post]);
+        
     }
 
     /**
@@ -48,7 +50,7 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', ['post'=>$post]);
     }
 
     /**
@@ -56,7 +58,11 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $data=$request->all();
+        $data['user_id']=1;
+     //Post::create($request->all($data) );
+     $post->update($data);
+     return redirect()->route('posts.index');
     }
 
     /**
@@ -64,6 +70,20 @@ class PostsController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('posts.index', ['post'=>$post]);
     }
+
+    public function storeComment(Request $request, Post $post)
+{
+    $validated = $request->validate([
+        'content' => 'required|string',
+    ]);
+
+    $post->comments()->create([
+        'content' => $validated['content'],
+    ]);
+
+    return redirect()->route('posts.show', $post);
+}
 }

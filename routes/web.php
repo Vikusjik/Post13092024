@@ -12,6 +12,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 Route::resource('posts', PostsController::class);
+Route::post('/posts/{post}/comments', [PostsController::class, 'storeComment'])->name('posts.storeComment');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
